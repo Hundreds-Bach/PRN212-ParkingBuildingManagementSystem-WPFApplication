@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="PBMS_WPF_Application.BLL/PBMS_WPF_Application.BLL.csproj" />
+  <Project Path="PBMS_WPF_Application.Core/PBMS_WPF_Application.Core.csproj" />
+  <Project Path="PBMS_WPF_Application.DAL/PBMS_WPF_Application.DAL.csproj" />
+  <Project Path="PBMS_WPF_Application/PBMS_WPF_Application.UI.csproj" />
+</Solution>
