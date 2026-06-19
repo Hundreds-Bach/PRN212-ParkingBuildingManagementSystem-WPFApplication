@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PBMS_WPF_Application.Core\PBMS_WPF_Application.Core.csproj" />
+    <ProjectReference Include="..\PBMS_WPF_Application.DAL\PBMS_WPF_Application.DAL.csproj" />
+  </ItemGroup>
+
 </Project>
