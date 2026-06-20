@@ -14,6 +14,20 @@ namespace PBMS_WPF_Application
         public MainWindow()
         {
             InitializeComponent();
+
+            // Initialize and seed database
+            try
+            {
+                using (var context = new PBMS_WPF_Application.DAL.Entities.PbmsDbContext())
+                {
+                    PBMS_WPF_Application.DAL.Repositories.DbInitializer.Initialize(context);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show($"Lỗi khởi tạo cơ sở dữ liệu: {ex.Message}", "Lỗi hệ thống", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
             _userService = new UserService();
         }
 
@@ -64,6 +78,12 @@ namespace PBMS_WPF_Application
                 
                 // Keep the credentials cleared
                 pbLoginPassword.Password = string.Empty;
+
+                // Navigate to Parking Map Window
+                var parkingMapWindow = new ParkingMapWindow();
+                Application.Current.MainWindow = parkingMapWindow;
+                parkingMapWindow.Show();
+                this.Close();
             }
             else
             {
