@@ -39,29 +39,17 @@ public class UserRepository : IUserRepository
 
     public int GetOrCreateDefaultRoleId()
     {
-        // Check if a role with name containing "User" or "Customer" exists
-        var defaultRole = _context.Roles.FirstOrDefault(r => 
-            r.RoleName.ToLower().Contains("user") || 
-            r.RoleName.ToLower().Contains("customer") ||
-            r.RoleName.ToLower().Contains("khách") ||
-            r.RoleName.ToLower().Contains("khach"));
-
+        // Check if Registered_Driver role exists
+        var defaultRole = _context.Roles.FirstOrDefault(r => r.RoleName == "Registered_Driver" || r.RoleId == 1);
         if (defaultRole != null)
         {
             return defaultRole.RoleId;
         }
 
-        // If not, see if any role exists
-        var firstRole = _context.Roles.FirstOrDefault();
-        if (firstRole != null)
-        {
-            return firstRole.RoleId;
-        }
-
-        // If no roles exist at all, create a default "User" role to prevent foreign key errors
+        // If no Registered_Driver role exists, create it
         var newRole = new Role
         {
-            RoleName = "User",
+            RoleName = "Registered_Driver",
             IsDeleted = false
         };
         _context.Roles.Add(newRole);
