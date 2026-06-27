@@ -109,6 +109,16 @@
 
             <Separator Margin="0,0,0,20"/>
 
+            <TextBlock x:Name="lblSelectedSlot" Text="O dang chon: chua co" TextWrapping="Wrap" Margin="0,0,0,10"/>
+
+            <TextBlock Text="Bien so xe:" Margin="0,0,0,5"/>
+            <TextBox x:Name="txtLicensePlate" Height="30" VerticalContentAlignment="Center" Margin="0,0,0,10"/>
+
+            <Button x:Name="btnCheckIn" Content="Check-in" Height="30" Margin="0,0,0,10" Click="BtnCheckIn_Click"/>
+            <Button x:Name="btnCheckOut" Content="Check-out" Height="30" Margin="0,0,0,20" Click="BtnCheckOut_Click"/>
+
+            <Separator Margin="0,0,0,20"/>
+
             <!-- Logout Button -->
             <Button x:Name="btnLogout" Content="Đăng Xuất" Height="30" Click="BtnLogout_Click"/>
         </StackPanel>
@@ -125,14 +135,14 @@
 
             <!-- Scrollable Grid -->
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <ItemsControl x:Name="lstParkingSlots">
-                    <ItemsControl.ItemsPanel>
+                <ListBox x:Name="lstParkingSlots" BorderThickness="0" Background="Transparent" SelectionChanged="LstParkingSlots_SelectionChanged">
+                    <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Horizontal" Width="880"/>
                         </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
+                    </ListBox.ItemsPanel>
 
-                    <ItemsControl.ItemTemplate>
+                    <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Border Style="{StaticResource SlotCardStyle}">
                                 <Grid VerticalAlignment="Center">
@@ -204,8 +214,8 @@
                                 </Grid>
                             </Border>
                         </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </ScrollViewer>
         </Grid>
     </Grid>
