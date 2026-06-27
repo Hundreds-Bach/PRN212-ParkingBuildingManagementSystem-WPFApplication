@@ -80,7 +80,7 @@ namespace PBMS_WPF_Application
                 pbLoginPassword.Password = string.Empty;
 
                 // Navigate to Parking Map Window
-                var parkingMapWindow = new ParkingMapWindow();
+                var parkingMapWindow = new ParkingMapWindow(user.UserId);
                 Application.Current.MainWindow = parkingMapWindow;
                 parkingMapWindow.Show();
                 this.Close();
