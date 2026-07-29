@@ -84,9 +84,13 @@ namespace PBMS_WPF_Application
                 {
                     targetWindow = new StaffWindow(user.UserId);
                 }
-                else if (user.RoleId == 4 || user.RoleId == 3) // Admin / Manager
+                else if (user.RoleId == 4) // Admin
                 {
                     targetWindow = new AdminWindow(user.UserId);
+                }
+                else if (user.RoleId == 3) // Manager
+                {
+                    targetWindow = new ManagerDashboardWindow();
                 }
                 else // Registered_Driver (default / RoleId == 1)
                 {
