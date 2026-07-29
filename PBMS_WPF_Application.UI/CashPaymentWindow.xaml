@@ -1,0 +1,43 @@
+<Window x:Class="PBMS_WPF_Application.CashPaymentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Thanh toán tiền mặt" Height="570" Width="480"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="22">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="THANH TOÁN TIỀN MẶT" FontSize="22" FontWeight="Bold"
+                   HorizontalAlignment="Center" Margin="0,0,0,18"/>
+        <Border Grid.Row="1" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="6" Padding="18" Background="#FAFAFA">
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="150"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/>
+                    <RowDefinition Height="34"/><RowDefinition Height="34"/><RowDefinition Height="34"/>
+                    <RowDefinition Height="34"/><RowDefinition Height="45"/><RowDefinition Height="45"/>
+                    <RowDefinition Height="45"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Mã vé:"/><TextBlock Grid.Column="1" x:Name="lblTicketCode" FontWeight="SemiBold"/>
+                <TextBlock Grid.Row="1" Text="Biển số:"/><TextBlock Grid.Row="1" Grid.Column="1" x:Name="lblLicensePlate" FontWeight="SemiBold"/>
+                <TextBlock Grid.Row="2" Text="Vị trí:"/><TextBlock Grid.Row="2" Grid.Column="1" x:Name="lblSlot"/>
+                <TextBlock Grid.Row="3" Text="Loại xe:"/><TextBlock Grid.Row="3" Grid.Column="1" x:Name="lblVehicleType"/>
+                <TextBlock Grid.Row="4" Text="Thời gian vào:"/><TextBlock Grid.Row="4" Grid.Column="1" x:Name="lblCheckIn"/>
+                <TextBlock Grid.Row="5" Text="Thời gian ra:"/><TextBlock Grid.Row="5" Grid.Column="1" x:Name="lblCheckOut"/>
+                <TextBlock Grid.Row="6" Text="Số giờ tính phí:"/><TextBlock Grid.Row="6" Grid.Column="1" x:Name="lblHours"/>
+                <TextBlock Grid.Row="7" Text="Tổng tiền:" FontWeight="Bold" VerticalAlignment="Center"/>
+                <TextBlock Grid.Row="7" Grid.Column="1" x:Name="lblTotal" FontSize="20" FontWeight="Bold" Foreground="#C62828" VerticalAlignment="Center"/>
+                <TextBlock Grid.Row="8" Text="Tiền khách đưa:" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="8" Grid.Column="1" x:Name="txtCashReceived" Height="32" VerticalContentAlignment="Center" TextChanged="TxtCashReceived_TextChanged"/>
+                <TextBlock Grid.Row="9" Text="Tiền thừa:" FontWeight="Bold" VerticalAlignment="Center"/>
+                <TextBlock Grid.Row="9" Grid.Column="1" x:Name="lblChange" FontSize="18" FontWeight="Bold" Foreground="DarkGreen" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
+            <Button Content="Hủy" Width="100" Height="36" Margin="0,0,10,0" Click="BtnCancel_Click"/>
+            <Button x:Name="btnConfirm" Content="Xác nhận thanh toán" Width="170" Height="36"
+                    Background="DarkGreen" Foreground="White" FontWeight="Bold"
+                    IsEnabled="False" Click="BtnConfirm_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

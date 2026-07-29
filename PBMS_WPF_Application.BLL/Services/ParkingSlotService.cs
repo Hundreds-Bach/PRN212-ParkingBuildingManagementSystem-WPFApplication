@@ -1,5 +1,6 @@
 using PBMS_WPF_Application.DAL.Entities;
 using PBMS_WPF_Application.DAL.Repositories;
+using PBMS_WPF_Application.Core.DTOs;
 using System.Collections.Generic;
 
 namespace PBMS_WPF_Application.BLL.Services;
@@ -65,23 +66,38 @@ public class ParkingSlotService : IParkingSlotService
             return false;
         }
 
-        var rand = new System.Random();
-        bool isUnique = false;
-        string code = string.Empty;
-        var activeSessions = _parkingSlotRepository.GetActiveOrReservedSessions();
-        int attempts = 0;
-        while (!isUnique && attempts < 100)
+        try
         {
-            code = "T" + rand.Next(100000, 999999).ToString();
-            if (!activeSessions.Any(s => s.Ticket.TicketCode.Equals(code, System.StringComparison.OrdinalIgnoreCase)))
+            var rand = new System.Random();
+            bool isUnique = false;
+            string code = string.Empty;
+            var activeSessions = _parkingSlotRepository.GetActiveOrReservedSessions();
+            int attempts = 0;
+            while (!isUnique && attempts < 100)
             {
-                isUnique = true;
+                code = "T" + rand.Next(100000, 999999);
+                if (!activeSessions.Any(s => s.Ticket.TicketCode.Equals(code, System.StringComparison.OrdinalIgnoreCase)))
+                {
+                    isUnique = true;
+                }
+                attempts++;
             }
-            attempts++;
-        }
 
-        ticketCode = code;
-        return _parkingSlotRepository.BookSlot(slotId, userId, licenseVehicle.Trim(), ticketCode, out message);
+            if (!isUnique)
+            {
+                message = "Không thể tạo mã vé. Vui lòng thử lại.";
+                return false;
+            }
+
+            ticketCode = code;
+            return _parkingSlotRepository.BookSlot(slotId, userId, licenseVehicle.Trim(), ticketCode, out message);
+        }
+        catch (System.Exception ex)
+        {
+            ticketCode = string.Empty;
+            message = $"Không thể đặt chỗ: {ex.GetBaseException().Message}";
+            return false;
+        }
     }
 
     public bool ConfirmCheckIn(string ticketCode, string licenseVehicle, out string message)
@@ -114,6 +130,44 @@ public class ParkingSlotService : IParkingSlotService
         }
 
         return _parkingSlotRepository.ConfirmCheckOut(ticketCode.Trim(), licenseVehicle.Trim(), out message);
+    }
+
+    public CashCheckoutDto? GetCashCheckout(string ticketCode, string licenseVehicle, out string message)
+    {
+        if (string.IsNullOrWhiteSpace(ticketCode) || string.IsNullOrWhiteSpace(licenseVehicle))
+        {
+            message = "Vui lòng nhập đầy đủ mã vé và biển số xe.";
+            return null;
+        }
+
+        try
+        {
+            return _parkingSlotRepository.GetCashCheckout(ticketCode.Trim(), licenseVehicle.Trim(), out message);
+        }
+        catch (System.Exception ex)
+        {
+            message = $"Không thể tính phí: {ex.GetBaseException().Message}";
+            return null;
+        }
+    }
+
+    public bool CompleteCashCheckout(int sessionId, int staffId, decimal totalAmount, out string message)
+    {
+        if (sessionId <= 0 || staffId <= 0 || totalAmount < 0)
+        {
+            message = "Thông tin thanh toán không hợp lệ.";
+            return false;
+        }
+
+        try
+        {
+            return _parkingSlotRepository.CompleteCashCheckout(sessionId, staffId, totalAmount, out message);
+        }
+        catch (System.Exception ex)
+        {
+            message = $"Không thể hoàn tất thanh toán: {ex.GetBaseException().Message}";
+            return false;
+        }
     }
 
     public List<ParkingSession> GetActiveOrReservedSessions()
