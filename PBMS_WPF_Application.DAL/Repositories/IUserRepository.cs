@@ -10,4 +10,6 @@ public interface IUserRepository
     void Add(User user);
     int GetOrCreateDefaultRoleId();
     bool SaveChanges();
+    System.Collections.Generic.List<User> GetAllUsers();
+    System.Collections.Generic.List<Role> GetAllRoles();
 }

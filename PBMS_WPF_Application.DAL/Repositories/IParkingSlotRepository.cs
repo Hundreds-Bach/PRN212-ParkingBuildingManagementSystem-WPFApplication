@@ -8,4 +8,8 @@ public interface IParkingSlotRepository
     List<ParkingSlot> GetSlotsByFloor(int floorId);
     bool CheckIn(int slotId, int userId, string licenseVehicle, out string message);
     bool CheckOut(int slotId, out string message);
+    bool BookSlot(int slotId, int userId, string licenseVehicle, string ticketCode, out string message);
+    bool ConfirmCheckIn(string ticketCode, string licenseVehicle, out string message);
+    bool ConfirmCheckOut(string ticketCode, string licenseVehicle, out string message);
+    List<ParkingSession> GetActiveOrReservedSessions();
 }
