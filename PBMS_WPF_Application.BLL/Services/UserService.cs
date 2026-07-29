@@ -227,4 +227,114 @@ public class UserService : IUserService
 
         return false;
     }
+
+    public System.Collections.Generic.List<User> GetAllUsers()
+    {
+        return _userRepository.GetAllUsers();
+    }
+
+    public System.Collections.Generic.List<Role> GetAllRoles()
+    {
+        return _userRepository.GetAllRoles();
+    }
+
+    public bool CreateUserByAdmin(UserRegisterDto registerDto, int roleId, out string message)
+    {
+        if (registerDto == null)
+        {
+            message = "Dữ liệu đăng ký không hợp lệ.";
+            return false;
+        }
+
+        // 1. Validate Username
+        if (string.IsNullOrWhiteSpace(registerDto.Username))
+        {
+            message = "Tên tài khoản không được để trống.";
+            return false;
+        }
+
+        if (registerDto.Username.Trim().Length < 3)
+        {
+            message = "Tên tài khoản phải có ít nhất 3 ký tự.";
+            return false;
+        }
+
+        // 2. Validate Email
+        if (string.IsNullOrWhiteSpace(registerDto.Email))
+        {
+            message = "Email không được để trống.";
+            return false;
+        }
+
+        var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+        if (!emailRegex.IsMatch(registerDto.Email.Trim()))
+        {
+            message = "Định dạng Email không hợp lệ (Ví dụ: name@example.com).";
+            return false;
+        }
+
+        // 3. Validate Phone Number (Vietnam format)
+        if (!IsValidVietnamPhoneNumber(registerDto.PhoneNumber, out string cleanedPhone))
+        {
+            message = "Số điện thoại không đúng định dạng Việt Nam.\n(Chấp nhận 10 chữ số bắt đầu bằng 0, hoặc mã vùng 84, +84. VD: 0987654321)";
+            return false;
+        }
+
+        // 4. Validate Password (strictly > 6 characters, i.e., >= 7 characters)
+        if (string.IsNullOrEmpty(registerDto.Password))
+        {
+            message = "Mật khẩu không được để trống.";
+            return false;
+        }
+
+        if (registerDto.Password.Length <= 6)
+        {
+            message = "Mật khẩu phải có độ dài trên 6 ký tự.";
+            return false;
+        }
+
+        // 5. Check if Phone Number already exists
+        if (_userRepository.GetByPhoneNumber(cleanedPhone) != null)
+        {
+            message = "Số điện thoại này đã được đăng ký trong hệ thống.";
+            return false;
+        }
+
+        // 6. Check if Email already exists
+        if (_userRepository.GetByEmail(registerDto.Email.Trim()) != null)
+        {
+            message = "Email này đã được đăng ký trong hệ thống.";
+            return false;
+        }
+
+        try
+        {
+            // 7. Create user entity with specified roleId
+            var newUser = new User
+            {
+                Username = registerDto.Username.Trim(),
+                Email = registerDto.Email.Trim(),
+                PhoneNumber = cleanedPhone,
+                PasswordHash = PasswordHasher.HashPassword(registerDto.Password, cleanedPhone),
+                RoleId = roleId,
+                IsDeleted = false
+            };
+
+            _userRepository.Add(newUser);
+            
+            if (_userRepository.SaveChanges())
+            {
+                message = "Tạo tài khoản thành công!";
+                return true;
+            }
+
+            message = "Lưu thông tin thất bại. Vui lòng thử lại.";
+            return false;
+        }
+        catch (Exception ex)
+        {
+            message = $"Đã xảy ra lỗi hệ thống: {ex.Message}";
+            return false;
+        }
+    }
 }

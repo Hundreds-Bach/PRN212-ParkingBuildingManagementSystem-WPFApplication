@@ -102,38 +102,35 @@ namespace PBMS_WPF_Application
             }
         }
 
-        private void BtnCheckIn_Click(object sender, RoutedEventArgs e)
+        private void BtnBookSlot_Click(object sender, RoutedEventArgs e)
         {
             if (lstParkingSlots.SelectedItem is not ParkingSlot slot)
             {
-                MessageBox.Show("Vui long chon o do xe truoc.", "Thong bao", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Vui lòng chọn ô đỗ xe trước.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            bool success = _parkingSlotService.CheckIn(slot.SlotId, _currentUserId, txtLicensePlate.Text, out string message);
-            MessageBox.Show(message, success ? "Thanh cong" : "Thong bao", MessageBoxButton.OK, success ? MessageBoxImage.Information : MessageBoxImage.Warning);
+            string licensePlate = txtLicensePlate.Text.Trim();
+            if (string.IsNullOrWhiteSpace(licensePlate))
+            {
+                MessageBox.Show("Vui lòng nhập biển số xe trước khi đặt chỗ.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
+            bool success = _parkingSlotService.BookSlot(slot.SlotId, _currentUserId, licensePlate, out string ticketCode, out string message);
+            
             if (success)
             {
+                MessageBox.Show($"Đặt chỗ thành công!\nMã vé của bạn là: {ticketCode}\nVui lòng lưu lại mã vé này để cung cấp cho nhân viên check-in.", 
+                                "Thành Công", 
+                                MessageBoxButton.OK, 
+                                MessageBoxImage.Information);
                 txtLicensePlate.Text = string.Empty;
                 LoadParkingSlots(_currentFloorId);
             }
-        }
-
-        private void BtnCheckOut_Click(object sender, RoutedEventArgs e)
-        {
-            if (lstParkingSlots.SelectedItem is not ParkingSlot slot)
+            else
             {
-                MessageBox.Show("Vui long chon o do xe truoc.", "Thong bao", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            bool success = _parkingSlotService.CheckOut(slot.SlotId, out string message);
-            MessageBox.Show(message, success ? "Thanh cong" : "Thong bao", MessageBoxButton.OK, success ? MessageBoxImage.Information : MessageBoxImage.Warning);
-
-            if (success)
-            {
-                LoadParkingSlots(_currentFloorId);
+                MessageBox.Show(message, "Lỗi đặt chỗ", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

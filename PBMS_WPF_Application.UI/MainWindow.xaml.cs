@@ -79,24 +79,26 @@ namespace PBMS_WPF_Application
                 // Keep the credentials cleared
                 pbLoginPassword.Password = string.Empty;
 
-                Window destination;
-                string roleName = user.Role?.RoleName ?? string.Empty;
+                Window targetWindow;
+                if (user.RoleId == 2) // Staff
+                {
+                    targetWindow = new StaffWindow(user.UserId);
+                }
+                else if (user.RoleId == 4) // Admin
+                {
+                    targetWindow = new AdminWindow(user.UserId);
+                }
+                else if (user.RoleId == 3) // Manager
+                {
+                    targetWindow = new ManagerDashboardWindow();
+                }
+                else // Registered_Driver (default / RoleId == 1)
+                {
+                    targetWindow = new ParkingMapWindow(user.UserId);
+                }
 
-                if (roleName.Equals("Admin", System.StringComparison.OrdinalIgnoreCase))
-                {
-                    destination = new AdminWindow(user.UserId);
-                }
-                else if (roleName.Equals("Manager", System.StringComparison.OrdinalIgnoreCase))
-                {
-                    destination = new ManagerDashboardWindow();
-                }
-                else
-                {
-                    destination = new ParkingMapWindow(user.UserId);
-                }
-
-                Application.Current.MainWindow = destination;
-                destination.Show();
+                Application.Current.MainWindow = targetWindow;
+                targetWindow.Show();
                 this.Close();
             }
             else

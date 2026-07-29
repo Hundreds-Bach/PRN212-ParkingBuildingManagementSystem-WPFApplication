@@ -1,5 +1,5 @@
-using PBMS_WPF_Application.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using PBMS_WPF_Application.DAL.Entities;
 using System.Linq;
 
 namespace PBMS_WPF_Application.DAL.Repositories;
@@ -64,5 +64,15 @@ public class UserRepository : IUserRepository
     public bool SaveChanges()
     {
         return _context.SaveChanges() > 0;
+    }
+
+    public System.Collections.Generic.List<User> GetAllUsers()
+    {
+        return _context.Users.Include(u => u.Role).Where(u => !u.IsDeleted).ToList();
+    }
+
+    public System.Collections.Generic.List<Role> GetAllRoles()
+    {
+        return _context.Roles.Where(r => !r.IsDeleted).ToList();
     }
 }
