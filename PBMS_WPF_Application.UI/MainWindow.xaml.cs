@@ -79,10 +79,24 @@ namespace PBMS_WPF_Application
                 // Keep the credentials cleared
                 pbLoginPassword.Password = string.Empty;
 
-                // Navigate to Parking Map Window
-                var parkingMapWindow = new ParkingMapWindow(user.UserId);
-                Application.Current.MainWindow = parkingMapWindow;
-                parkingMapWindow.Show();
+                Window destination;
+                string roleName = user.Role?.RoleName ?? string.Empty;
+
+                if (roleName.Equals("Admin", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    destination = new AdminWindow(user.UserId);
+                }
+                else if (roleName.Equals("Manager", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    destination = new ManagerDashboardWindow();
+                }
+                else
+                {
+                    destination = new ParkingMapWindow(user.UserId);
+                }
+
+                Application.Current.MainWindow = destination;
+                destination.Show();
                 this.Close();
             }
             else

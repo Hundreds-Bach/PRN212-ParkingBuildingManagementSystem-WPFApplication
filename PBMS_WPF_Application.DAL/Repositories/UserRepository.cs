@@ -1,4 +1,5 @@
 using PBMS_WPF_Application.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace PBMS_WPF_Application.DAL.Repositories;
@@ -24,7 +25,9 @@ public class UserRepository : IUserRepository
 
     public User? GetByPhoneNumber(string phoneNumber)
     {
-        return _context.Users.FirstOrDefault(u => u.PhoneNumber == phoneNumber && !u.IsDeleted);
+        return _context.Users
+            .Include(u => u.Role)
+            .FirstOrDefault(u => u.PhoneNumber == phoneNumber && !u.IsDeleted);
     }
 
     public User? GetByEmail(string email)
